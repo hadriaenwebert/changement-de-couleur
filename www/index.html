@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#090b12">
+<title>Changement de Couleur</title>
+<style>
+:root{--muted:#9ba7bb;--white:#f6f7fb;--green:#39e58c;--yellow:#ffd84d;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;background:#090b12 radial-gradient(ellipse at 50% 0%,#1a2440 0,#090b12 55%);color:var(--white);font-family:system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+button{font:inherit;border:0;cursor:pointer;color:var(--white);font-weight:750;border-radius:13px;padding:12px 16px;background:linear-gradient(135deg,#5a42e8,#267dff)}
+button:disabled{opacity:.35;cursor:not-allowed}button.secondary{background:#273247}button.danger{background:linear-gradient(135deg,#a82748,#ed4662)}button.good{background:linear-gradient(135deg,#0e9c67,#24cf8b);color:#06150e}
+input{font:inherit;width:100%;padding:12px;border-radius:12px;border:1px solid #ffffff30;background:#0d1320;color:var(--white);margin:6px 0}
+header{padding:16px;max-width:1000px;margin:auto}.logo{font-weight:900;letter-spacing:.08em;font-size:clamp(17px,4vw,25px)}.logo span{color:var(--yellow)}
+main{max-width:1000px;margin:auto;padding:8px 14px 34px}
+.panel{background:#141b29;border:1px solid #ffffff18;border-radius:22px;padding:18px}
+h1{font-size:clamp(25px,6vw,38px);margin:6px 0 8px}h2{font-size:19px;margin:0}p{color:var(--muted);line-height:1.5}
+.narrow{max-width:520px;margin:4vh auto}.full{width:100%;margin-top:8px}.hint{font-size:12px;color:var(--muted)}
+.row{display:flex;gap:8px}.row>*{flex:1}
+.topline{display:flex;justify-content:space-between;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.pill{background:#ffffff12;border:1px solid #ffffff18;border-radius:999px;padding:7px 11px;font-size:12px;color:#d9e0ed}
+.opponents{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0}
+.opponent{background:#151d2b;border:1px solid #ffffff14;border-radius:15px;padding:10px;text-align:center;min-width:0}
+.opponent.active{border-color:var(--green);box-shadow:0 0 22px #39e58c30}.opponent.off{opacity:.45}
+.opname{font-size:12px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.count{font-size:11px;color:var(--muted);margin-top:3px}
+.table{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:center;margin:15px 0}
+.pile{background:#ffffff08;border:1px dashed #ffffff24;border-radius:18px;min-height:145px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:10px}.pile small{color:var(--muted);font-size:11px}
+.card{width:82px;height:116px;border-radius:12px;background:#f8f8f5;color:#111;display:flex;flex-direction:column;justify-content:space-between;padding:8px;box-shadow:0 8px 20px #0008;font-weight:900}
+.card .rank{font-size:23px;line-height:1}.card .suit{font-size:31px;text-align:center}.card .corner{font-size:11px}.card.red{color:#e3334e}.card.black{color:#161b25}
+.card.back{background:repeating-linear-gradient(45deg,#202e57,#202e57 6px,#344b83 6px,#344b83 12px);border:4px solid #e9edf6;color:#fff;align-items:center;justify-content:center;font-size:20px}
+.handtitle{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}
+.hand{display:flex;gap:7px;overflow-x:auto;padding:7px 2px 15px;min-height:139px}
+.hand .card{flex:0 0 76px;width:76px;height:108px;cursor:pointer}.card.playable{outline:3px solid var(--green);box-shadow:0 0 0 5px #39e58c25,0 8px 20px #0008}
+.actions{display:flex;gap:8px;flex-wrap:wrap}.actions button{flex:1;min-width:120px}
+.status{padding:12px 14px;background:#202a3c;border-radius:14px;margin:12px 0;font-size:13px;line-height:1.4}
+.overlay{position:fixed;inset:0;background:#05070bdc;display:none;align-items:center;justify-content:center;padding:18px;z-index:5}
+.modal{width:min(430px,100%);background:#182131;border:1px solid #ffffff24;border-radius:22px;padding:22px;text-align:center}
+.colors{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}.colors button{padding:17px}.c-red{background:#d92d4a}.c-blue{background:#267de7}.c-green{background:#129b62}.c-yellow{background:#c99d00;color:#17130a}
+.code{font-size:44px;font-weight:900;letter-spacing:.25em;color:var(--yellow);text-align:center;margin:8px 0}
+.plist div{background:#1b2332;border-radius:12px;padding:10px 14px;margin:6px 0}
+#net{position:fixed;left:0;right:0;top:env(safe-area-inset-top);background:#a82748;text-align:center;font-size:12px;padding:4px;display:none;z-index:9}
+@media(min-width:700px){.table{max-width:530px;margin:18px auto}.hand{justify-content:center}.card{width:92px;height:130px}.hand .card{width:82px;height:116px;flex-basis:82px}}
+</style>
+</head>
+<body>
+<div id="net">Connexion au serveur…</div>
+<header><div class="logo">CHANGEMENT <span>DE COULEUR</span></div></header>
+<main>
+<section id="home" class="panel narrow">
+  <h1>Jouer à distance</h1>
+  <p>Un joueur crée la salle, les autres entrent le code à 4 lettres.</p>
+  <input id="nameIn" maxlength="14" placeholder="Ton prénom" autocomplete="off">
+  <button class="full" id="createBtn">Créer une salle</button>
+  <div class="row" style="margin-top:8px"><input id="codeIn" maxlength="4" placeholder="CODE" autocapitalize="characters" autocomplete="off"><button id="joinBtn">Rejoindre</button></div>
+  <p class="hint" id="err"></p>
+</section>
+<section id="lobby" class="panel narrow" style="display:none">
+  <div class="code" id="roomCode"></div>
+  <p style="text-align:center">Partage ce code avec les autres joueurs (2 à 4).</p>
+  <div class="plist" id="plist"></div>
+  <button class="full good" id="startBtn">Distribuer les cartes →</button>
+  <p class="hint" id="waitHint"></p>
+  <button class="full secondary" id="leave1">Quitter</button>
+</section>
+<section id="game" style="display:none">
+ <div class="topline"><div class="pill" id="turnPill"></div><div class="pill" id="direction"></div><div class="pill" id="roomPill"></div></div>
+ <div class="opponents" id="opponents"></div>
+ <div class="panel">
+  <div class="status" id="status"></div>
+  <div class="table">
+   <div class="pile"><small>PIOCHE</small><div class="card back">52</div><button class="secondary" id="draw">Piocher</button><small id="stockCount"></small></div>
+   <div class="pile"><small>CARTE VISIBLE</small><div id="topCard"></div><small id="chosenColor"></small></div>
+  </div>
+  <div class="handtitle"><h2>Tes cartes</h2><span class="pill" id="handCount"></span></div><div class="hand" id="hand"></div>
+  <div class="actions"><button class="good" id="endTurn">Passer mon tour</button><button class="good" id="nextBtn" style="display:none">Terminer mon tour →</button><button class="secondary" id="strikeBtn" style="display:none">✊ Frapper la table <span id="strikeCount">0/3</span></button><button class="danger" id="forgotBtn" style="display:none">Il a oublié !</button></div>
+ </div>
+ <p class="hint"><a href="#" id="leave2" style="color:var(--muted)">Quitter la partie</a></p>
+</section>
+</main>
+<div class="overlay" id="colorModal"><div class="modal"><h2>Choisis la nouvelle couleur</h2><div class="colors"><button class="c-red" data-suit="♥">♥ Cœur</button><button class="c-blue" data-suit="♦">♦ Carreau</button><button class="c-green" data-suit="♣">♣ Trèfle</button><button class="c-yellow" data-suit="♠">♠ Pique</button></div></div></div>
+<div class="overlay" id="winModal"><div class="modal"><div style="font-size:44px">🏆</div><h1 id="winner"></h1><p>a remporté la partie !</p><button class="full" id="again">Rejouer</button><button class="full secondary" id="leave3">Quitter</button></div></div>
+<script src="config.js"></script>
+<script>
+const NAMES={'♥':'Cœur','♦':'Carreau','♣':'Trèfle','♠':'Pique'};
+const $=id=>document.getElementById(id);
+let ws=null,V=null,pendingJ=null,retry=0;
+function pid(){try{let p=localStorage.getItem('cdc_pid');if(!p){p=(crypto.randomUUID?crypto.randomUUID():String(Math.random()).slice(2)+String(Date.now())+'0123456789abcdef');localStorage.setItem('cdc_pid',p)}return p}catch(e){return window.__p||(window.__p='p'+Math.random().toString(36).slice(2)+Date.now().toString(36)+'xxxxxxxx')}}
+function url(){return window.CDC_SERVER||((location.protocol==='https:'?'wss://':'ws://')+location.host)}
+function connect(){
+  ws=new WebSocket(url());
+  ws.onopen=()=>{retry=0;$('net').style.display='none';send({t:'hello',pid:pid()})};
+  ws.onmessage=e=>{const m=JSON.parse(e.data);if(m.t==='state'){V=m.view;render()}else if(m.t==='error'){$('err').textContent=m.msg;if(V)flash(m.msg)}};
+  ws.onclose=()=>{$('net').style.display='block';setTimeout(connect,Math.min(5000,500+retry++*700))};
+}
+function send(o){if(ws&&ws.readyState===1)ws.send(JSON.stringify(o))}
+function flash(t){$('status').textContent=t}
+const name=()=>{const n=$('nameIn').value.trim()||'Joueur';try{localStorage.setItem('cdc_name',n)}catch(e){}return n};
+try{$('nameIn').value=localStorage.getItem('cdc_name')||''}catch(e){}
+$('createBtn').onclick=()=>{$('err').textContent='';send({t:'create',name:name()})};
+$('joinBtn').onclick=()=>{$('err').textContent='';const c=$('codeIn').value.trim().toUpperCase();if(c.length!==4){$('err').textContent='Le code a 4 lettres.';return}send({t:'join',code:c,name:name()})};
+['leave1','leave3'].forEach(i=>$(i).onclick=()=>send({t:'leave'}));
+$('leave2').onclick=e=>{e.preventDefault();send({t:'leave'})};
+$('startBtn').onclick=()=>send({t:'start'});$('again').onclick=()=>send({t:'start'});
+$('draw').onclick=()=>send({t:'draw'});$('endTurn').onclick=()=>send({t:'end'});$('nextBtn').onclick=()=>send({t:'next'});
+$('strikeBtn').onclick=()=>send({t:'strike'});$('forgotBtn').onclick=()=>send({t:'forgot'});
+document.querySelectorAll('[data-suit]').forEach(b=>b.onclick=()=>{const i=pendingJ;pendingJ=null;$('colorModal').style.display='none';if(i!==null)send({t:'play',i,suit:b.dataset.suit})});
+function canPlay(c){if(V.pen>0)return c.r==='2';if(c.r==='A'&&V.top.r==='A')return false;return c.s===V.suit||c.r===V.top.r}
+function tryPlay(i){const c=V.hand[i];if(c.r==='J'){pendingJ=i;$('colorModal').style.display='flex'}else send({t:'play',i})}
+function cardEl(c){const d=document.createElement('div');d.className='card '+(['♥','♦'].includes(c.s)?'red':'black');d.innerHTML=`<div class="rank">${c.r}<br><span style="font-size:15px">${c.s}</span></div><div class="suit">${c.s}</div><div class="corner">${c.r} ${c.s}</div>`;return d}
+function show(id){['home','lobby','game'].forEach(x=>$(x).style.display=x===id?'block':'none')}
+function render(){
+  if(!V){show('home');$('winModal').style.display='none';return}
+  if(V.phase==='lobby'){
+    show('lobby');$('roomCode').textContent=V.code;const pl=$('plist');pl.replaceChildren();
+    V.players.forEach((p,i)=>{const d=document.createElement('div');d.textContent=p.name+(p.host?' 👑':'')+(i===V.you?' (toi)':'')+(p.online?'':' — hors ligne');pl.append(d)});
+    $('startBtn').style.display=V.isHost?'block':'none';$('startBtn').disabled=V.players.length<2;
+    $('waitHint').textContent=V.isHost?(V.players.length<2?'Il faut au moins 2 joueurs.':''):'En attente que le créateur lance la partie…';return}
+  show('game');
+  const me=V.turn===V.you&&V.phase==='play',cur=V.players[V.turn];
+  $('turnPill').textContent=me?'À toi de jouer !':`Tour de ${cur.name}`;
+  $('direction').textContent=V.dir===1?'Sens : horaire ↻':'Sens : antihoraire ↺';
+  $('roomPill').textContent='Salle '+V.code;
+  $('stockCount').textContent=`${V.deckCount} carte(s) restante(s)`;
+  $('topCard').replaceChildren(cardEl(V.top));
+  $('chosenColor').textContent=V.top.r==='J'?`Couleur choisie : ${NAMES[V.suit]}`:'';
+  $('handCount').textContent=`${V.hand.length} carte(s)`;
+  $('hand').replaceChildren();
+  V.hand.forEach((c,i)=>{const el=cardEl(c);if(me&&!V.played&&canPlay(c)){el.classList.add('playable');el.onclick=()=>tryPlay(i)}$('hand').append(el)});
+  const opp=$('opponents');opp.replaceChildren();
+  V.players.forEach((x,i)=>{if(i===V.you)return;const d=document.createElement('div');d.className='opponent'+(i===V.turn?' active':'')+(x.online?'':' off');d.innerHTML='<div class="opname"></div><div class="count"></div>';d.firstChild.textContent=x.name;d.lastChild.textContent=`${x.count} carte(s)`+(x.online?'':' · hors ligne');opp.append(d)});
+  $('draw').disabled=!me||(!V.aw3&&(V.drawn||V.played))||(V.deckCount===0&&V.discardCount<=1);
+  $('endTurn').disabled=!(me&&V.drawn&&!V.played)||V.pen>0;
+  $('nextBtn').style.display=me&&V.played?'inline-block':'none';
+  $('strikeBtn').style.display=me&&V.lastOne===V.you?'inline-block':'none';$('strikeCount').textContent=`${V.strikes}/3`;
+  $('forgotBtn').style.display=me&&V.lastOne!==null&&V.lastOne!==V.you?'inline-block':'none';
+  let t;
+  if(!me)t=`${cur.name} est en train de jouer…`;
+  else if(V.pen>0)t=`Pénalité de ${V.pen} cartes : pose un 2 pour la cumuler ou pioche.`;
+  else if(V.aw3)t='Tu as pioché pour le 3 : joue une carte ou pioche une deuxième carte.';
+  else if(V.played&&V.lastOne===V.you)t='Tu es à une carte ! Frappe la table 3 fois avant de terminer ton tour.';
+  else if(V.played)t='Tu as joué. Termine ton tour.';
+  else if(V.drawn)t='Tu as pioché. Joue une carte jouable ou passe ton tour.';
+  else t='Joue une carte de même couleur ou de même valeur, ou pioche.';
+  $('status').textContent=(V.msg?V.msg+' — ':'')+t;
+  if(V.phase==='over'){$('winner').textContent=V.winner;$('winModal').style.display='flex';$('again').style.display=V.isHost?'block':'none'}else $('winModal').style.display='none';
+}
+connect();
+</script>
+</body></html>
